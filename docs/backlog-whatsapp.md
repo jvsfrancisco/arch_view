@@ -11,7 +11,7 @@
 - **Por quê:** Comum entre designers de interiores fazer briefing com cliente e coletar
   bastante informação (preferências etc.) — precisa ficar de fácil acesso, separado da equipe.
 - **Status (contexto):** Novo, a validar.
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: mensagem de texto, 2026-07-18 11:32:51.
 
 ## 2. Projeto — aba Mídia `BL-02`
@@ -27,7 +27,7 @@
   sistema de 3 pastas (antes / durante / depois), sendo a pasta "depois" fixa (não se mexe
   mais) — útil também pra funcionalidade paga futura de gerar post de Instagram antes/depois.
 - **Status (contexto):** Novo, a validar (ideia já validada positivamente na própria conversa).
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: texto 2026-07-18 11:32:51 + áudios 11:50:04, 11:51:01, 11:51:36, 11:52:56, 11:57:44, 11:59:10.
 
 ## 3. Cronograma — visão geral `BL-03`
@@ -36,7 +36,7 @@
   (todas as obras juntas).
 - **Por quê:** Facilita comparar cronograma entre obras.
 - **Status (contexto):** Novo, a validar.
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: mensagem de texto, 2026-07-18 11:32:51.
 
 ## 4. Cronograma — cores por etapa `BL-04`
@@ -47,7 +47,7 @@
   mais de uma obra ao mesmo tempo, pra economizar na caçamba — precisa enxergar etapas
   coloridas lado a lado pra achar essas janelas de sobreposição.
 - **Status (contexto):** Novo, a validar.
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: mensagem de texto, 2026-07-18 11:32:51.
 
 ## 5. Menu inicial — botão "Novo" `BL-05`
@@ -60,7 +60,7 @@
   deve) mudar conforme o produto evolui. Decisão de processo: fazer a UI primeiro, só depois
   o back-end, pra não ficar retrabalhando enquanto a visão do produto ainda está mudando.
 - **Status (contexto):** Novo, a validar.
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: texto 2026-07-18 11:32:51 + áudio 11:52:56.
 
 ## 6. UI — paleta de cores customizável `BL-06`
@@ -97,7 +97,7 @@
 - **Item:** Sugestão de nome: **"Gestio: Gestão de Obras e Projetos"**. "Gestio" vem do
   latim clássico ("ação de administrar, gerenciar, conduzir um negócio"), raiz de "gestão".
 - **Status (contexto):** Em discussão / brainstorm, não fechado.
-- **Status:** Backlog
+- **Status:** A fazer
 - Nota lateral: Julieny sugeriu chamar a IA do app de "Geni" (de "gestão > gerência > geni").
 - Origem: mensagens de texto, 2026-07-18 13:23–13:30.
 
@@ -134,7 +134,7 @@
   que trabalha com o pai de um dos participantes poderia usar o app depois de pronto.
 - **Status (contexto):** Alinhado entre os dois, sem trabalho técnico associado ainda (é
   direcionamento de produto, não uma tela/feature específica).
-- **Status:** Backlog
+- **Status:** A fazer
 - Origem: áudios 11:27:41 e 11:33:31.
 
 ## 10. Vistoria — gerar documento/relatório automático `BL-10`
@@ -144,7 +144,7 @@
 - **Por quê:** Encadeamento natural do fluxo — vistoria já vira o relatório fotográfico sem
   trabalho manual extra de montagem.
 - **Status (contexto):** Novo, considerado fazer sentido pelo segundo participante.
-- **Status:** Backlog
+- **Status:** Concluído
 - Origem: áudio 11:37:21.
 
 ## 11. Relatório fotográfico x menu de Vistoria — indecisão de organização `BL-11`
