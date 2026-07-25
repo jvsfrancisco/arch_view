@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { CalendarRange } from 'lucide-react'
 import { Card, Progress, Badge } from '@/components/ui'
 import { projects } from '@/data/mock'
+import type { StageKey } from '@/data/types'
 import clsx from 'clsx'
 
 const months = ['Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov']
@@ -55,8 +56,10 @@ function TodayMarker() {
 
 export default function Schedule() {
   const [projectId, setProjectId] = useState<string>(ALL_PROJECTS)
+  const [stageFilter, setStageFilter] = useState<StageKey | null>(null)
   const project = projects.find((p) => p.id === projectId)
   const visibleProjects = project ? [project] : projects
+  const allStages = projects[0].stages
 
   const totals = {
     progress: Math.round(visibleProjects.reduce((sum, p) => sum + p.progress, 0) / visibleProjects.length),
@@ -144,7 +147,41 @@ export default function Schedule() {
               <CalendarRange size={18} className="text-blueprint-600" />
               <h2 className="font-bold tracking-tight">Linha do tempo · todas as obras</h2>
             </div>
-            <p className="text-sm text-dim">Uma faixa por obra, colorida pela etapa</p>
+            <p className="text-sm text-dim">
+              {stageFilter
+                ? `Destacando ${allStages.find((s) => s.key === stageFilter)?.label} em todas as obras`
+                : 'Uma faixa por obra, colorida pela etapa'}
+            </p>
+          </div>
+
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setStageFilter(null)}
+              className={clsx(
+                'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                stageFilter === null ? 'border-blueprint-500 text-blueprint-600' : 'text-dim hover:text-body',
+              )}
+            >
+              Todas as etapas
+            </button>
+            {allStages.map((s) => {
+              const active = stageFilter === s.key
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => setStageFilter(active ? null : s.key)}
+                  className="flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition"
+                  style={{
+                    borderColor: active ? stageColors[s.key] : undefined,
+                    color: active ? stageColors[s.key] : undefined,
+                    background: active ? `${stageColors[s.key]}18` : undefined,
+                  }}
+                >
+                  <span className="h-2 w-2 rounded-full" style={{ background: stageColors[s.key] }} />
+                  {s.label}
+                </button>
+              )
+            })}
           </div>
 
           <div className="overflow-x-auto">
@@ -166,16 +203,19 @@ export default function Schedule() {
                         .filter((s) => s.progress > 0)
                         .map((s) => {
                           const l = layout[s.key]
+                          const dimmed = stageFilter !== null && stageFilter !== s.key
                           return (
                             <div
                               key={s.key}
                               title={`${p.name} · ${s.label} · ${s.progress}%`}
-                              className="absolute top-0 h-8 rounded-md"
+                              className="absolute top-0 h-8 rounded-md transition-opacity"
                               style={{
                                 left: `${(l.start / months.length) * 100}%`,
                                 width: `${(l.span / months.length) * 100}%`,
                                 background: `${stageColors[s.key]}${s.progress === 100 ? 'cc' : '66'}`,
                                 border: `1px solid ${stageColors[s.key]}`,
+                                opacity: dimmed ? 0.12 : 1,
+                                zIndex: stageFilter === s.key ? 5 : undefined,
                               }}
                             />
                           )
@@ -185,14 +225,12 @@ export default function Schedule() {
                 ))}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t pt-3">
-                {projects[0].stages.map((s) => (
-                  <div key={s.key} className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: stageColors[s.key] }} />
-                    <span className="text-xs text-dim">{s.label}</span>
-                  </div>
-                ))}
-              </div>
+              {stageFilter && (
+                <p className="mt-4 border-t pt-3 text-xs text-dim">
+                  {projects.filter((p) => p.stages.some((s) => s.key === stageFilter && s.progress > 0 && s.progress < 100)).length} obra(s)
+                  com esta etapa em execução — sobreposições são oportunidade de compartilhar equipe, caçamba ou entrega de material.
+                </p>
+              )}
             </div>
           </div>
         </Card>
