@@ -15,6 +15,7 @@ import {
   Sparkles,
   ClipboardCheck,
   MapPin,
+  X,
 } from 'lucide-react'
 import { Card, Avatar, Badge, Progress } from '@/components/ui'
 import { inspections, projects, photos } from '@/data/mock'
@@ -34,6 +35,7 @@ export default function InspectionDetail() {
   const inspection = inspections.find((i) => i.id === id)
   const [checklist, setChecklist] = useState<ChecklistGroup[]>(inspection?.checklist ?? [])
   const [tool, setTool] = useState('Circular')
+  const [reportOpen, setReportOpen] = useState(false)
 
   if (!inspection) return <div className="text-dim">Vistoria não encontrada.</div>
   const project = projects.find((p) => p.id === inspection.projectId)!
@@ -52,6 +54,8 @@ export default function InspectionDetail() {
   }
 
   const markupPhoto = photos.find((p) => p.hasMarkup)!
+  const reportPhotos = photos.filter((p) => p.projectId === inspection.projectId && p.phase === 'durante')
+  const pendingItems = checklist.flatMap((g) => g.items.filter((i) => !i.checked).map((i) => ({ group: g.title, ...i })))
 
   return (
     <div className="space-y-5">
@@ -74,7 +78,9 @@ export default function InspectionDetail() {
           </p>
         </div>
         <div className="flex gap-2">
-          <button className="btn-outline"><Download size={15} /> PDF</button>
+          <button className="btn-outline" onClick={() => setReportOpen(true)}>
+            <FileText size={15} /> Gerar documento
+          </button>
           <button className="btn-primary"><Check size={15} /> Concluir</button>
         </div>
       </div>
@@ -204,6 +210,94 @@ export default function InspectionDetail() {
           </div>
         </div>
       </div>
+
+      {reportOpen && (
+        <div className="fixed inset-0 z-50 grid place-items-center p-4" onClick={() => setReportOpen(false)}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div
+            className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl shadow-lift"
+            style={{ background: 'var(--surface)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b px-6 py-4">
+              <div>
+                <h2 className="font-bold tracking-tight">Documento da vistoria</h2>
+                <p className="text-sm text-dim">Montado a partir do checklist, das fotos e das observações</p>
+              </div>
+              <button className="text-dim hover:text-body" onClick={() => setReportOpen(false)} aria-label="Fechar">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-5">
+              <div className="border-b pb-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-blueprint-600">Relatório de vistoria</p>
+                <h3 className="mt-1 text-xl font-bold tracking-tight">{project.name}</h3>
+                <p className="mt-1 text-sm text-dim">
+                  {inspection.stage} · {inspection.location} · {formatDateLong(inspection.date)} · {inspection.responsible}
+                </p>
+              </div>
+
+              <section className="border-b py-4">
+                <h4 className="mb-3 text-sm font-bold">Checklist</h4>
+                <p className="text-sm text-dim">
+                  {done} de {total} itens verificados ({pct}%).
+                  {pendingItems.length > 0 && ` ${pendingItems.length} item(ns) em aberto:`}
+                </p>
+                {pendingItems.length > 0 && (
+                  <ul className="mt-2 space-y-1.5">
+                    {pendingItems.map((item) => (
+                      <li key={item.id} className="flex gap-2 text-sm">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" />
+                        <span>
+                          <b>{item.group}:</b> {item.label}
+                          {item.note && <span className="text-dim"> — {item.note}</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              <section className="border-b py-4">
+                <h4 className="mb-3 text-sm font-bold">Registro fotográfico ({reportPhotos.length})</h4>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  {reportPhotos.map((p) => (
+                    <div key={p.id} className="overflow-hidden rounded-xl border">
+                      <div className="relative aspect-[4/3]" style={{ background: photoGradient(p.hue) }}>
+                        {p.hasMarkup && (
+                          <>
+                            <svg viewBox="0 0 200 150" className="absolute inset-0 h-full w-full">
+                              <ellipse cx="100" cy="75" rx="42" ry="32" fill="none" stroke="#ff3b6b" strokeWidth="3" />
+                            </svg>
+                            <span className="absolute right-1.5 top-1.5 rounded bg-clay-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                              Marcada
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <div className="p-2">
+                        <p className="text-xs font-semibold">{p.location}</p>
+                        <p className="line-clamp-2 text-[11px] text-dim">{p.comment}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="py-4">
+                <h4 className="mb-2 text-sm font-bold">Observações</h4>
+                <p className="text-sm leading-relaxed">{inspection.notes}</p>
+              </section>
+            </div>
+
+            <div className="flex justify-end gap-2 border-t px-6 py-4">
+              <button className="btn-ghost text-sm" onClick={() => setReportOpen(false)}>Fechar</button>
+              <button className="btn-primary text-sm"><Download size={15} /> Exportar PDF</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
