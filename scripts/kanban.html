@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Backlog · Gestio (local)</title>
+<style>
+  :root {
+    --ink: #10233d; --dim: #4d647f; --paper: #eef2f8; --surface: #ffffff;
+    --line: #d3dfec; --line-strong: #b7c8dc; --accent: #2f6fed; --accent-soft: #dfe9fd;
+    --ok: #1f8a70; --ok-soft: #dcf1ea; --warn: #b8860b; --warn-soft: #f6ecd2;
+    --danger: #c1622d; --danger-soft: #f8e3d5;
+    --shadow: 0 1px 2px rgba(16,35,61,0.06), 0 8px 24px -12px rgba(16,35,61,0.18);
+    --tag-cliente: #1f8a70; --tag-cliente-soft: #dcf1ea;
+    --tag-midia: #1f8a70; --tag-midia-soft: #dcf1ea;
+    --tag-cronograma: #b8860b; --tag-cronograma-soft: #f6ecd2;
+    --tag-menu: #5b6b7c; --tag-menu-soft: #e6eaee;
+    --tag-ui: #7c5cbf; --tag-ui-soft: #ece6f8;
+    --tag-nome: #5b6b7c; --tag-nome-soft: #e6eaee;
+    --tag-tecnico: #c1622d; --tag-tecnico-soft: #f8e3d5;
+    --tag-escopo: #5b6b7c; --tag-escopo-soft: #e6eaee;
+    --tag-vistoria: #c1622d; --tag-vistoria-soft: #f8e3d5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e7edf5; --dim: #93a6ba; --paper: #0b1624; --surface: #142236;
+      --line: #24405e; --line-strong: #345277; --accent: #5b8dff; --accent-soft: #1c2c48;
+      --ok: #4ecfae; --ok-soft: #123329; --warn: #e0b64a; --warn-soft: #392c0f;
+      --danger: #e08a5b; --danger-soft: #3a2417;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+      --tag-cliente: #4ecfae; --tag-cliente-soft: #123329; --tag-midia: #4ecfae; --tag-midia-soft: #123329;
+      --tag-cronograma: #e0b64a; --tag-cronograma-soft: #392c0f; --tag-menu: #9fb1c4; --tag-menu-soft: #1c2733;
+      --tag-ui: #b39ce8; --tag-ui-soft: #241d3a; --tag-nome: #9fb1c4; --tag-nome-soft: #1c2733;
+      --tag-tecnico: #e08a5b; --tag-tecnico-soft: #3a2417; --tag-escopo: #9fb1c4; --tag-escopo-soft: #1c2733;
+      --tag-vistoria: #e08a5b; --tag-vistoria-soft: #3a2417;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+  }
+  .mono { font-family: ui-monospace, SFMono-Regular, Consolas, "Cascadia Mono", monospace; }
+  .page { max-width: 1400px; margin: 0 auto; padding: 28px 28px 60px; }
+
+  header.top {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--line);
+  }
+  header.top .eyebrow { font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0 0 4px; }
+  header.top h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  header.top p.sub { margin: 6px 0 0; color: var(--dim); font-size: 13.5px; max-width: 60ch; }
+
+  .stats { display: flex; gap: 10px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 14px; text-align: center; min-width: 64px; }
+  .stat .n { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+  .stat .l { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  .board { display: grid; grid-template-columns: repeat(4, minmax(270px, 1fr)); gap: 16px; align-items: start; }
+  @media (max-width: 980px) {
+    .board { grid-auto-flow: column; grid-template-columns: none; overflow-x: auto; padding-bottom: 8px; }
+    .col { width: 280px; flex: 0 0 auto; }
+  }
+
+  .col { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-height: 160px; transition: border-color 0.15s, background 0.15s; }
+  .col.over { border-color: var(--accent); background: var(--accent-soft); }
+  .col-head { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 12px; }
+  .col-head .name { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; }
+  .col-head .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .col-head .count { font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 1px 8px; color: var(--dim); }
+
+  .cards { display: flex; flex-direction: column; gap: 9px; min-height: 40px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 11px; padding: 12px 13px; cursor: grab; box-shadow: var(--shadow); transition: opacity 0.12s, border-color 0.12s; }
+  .card:active { cursor: grabbing; }
+  .card:hover { border-color: var(--line-strong); }
+  .card.dragging { opacity: 0.4; }
+  .card .row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+  .tag { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .id { font-size: 10px; color: var(--dim); }
+  .card h3 { font-size: 13.5px; font-weight: 700; line-height: 1.35; margin: 0 0 5px; text-wrap: balance; }
+  .card p.desc { font-size: 12px; color: var(--dim); line-height: 1.5; margin: 0; }
+  .card .origin { margin-top: 8px; font-size: 10.5px; color: var(--dim); }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 10px; font-size: 12.5px; box-shadow: var(--shadow); opacity: 0; transform: translateY(6px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.err { background: var(--danger); }
+
+  footer.note { margin-top: 26px; font-size: 11.5px; color: var(--dim); text-align: center; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Backlog de produto · local</p>
+      <h1>Gestio — do feedback do WhatsApp ao roadmap</h1>
+      <p class="sub">Arraste os cartões — cada solta grava direto em <span class="mono">docs/backlog-whatsapp.md</span> via servidor local.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="board" id="board"></div>
+
+  <footer class="note">Servidor local · <span class="mono">npm run kanban</span> · escreve em docs/backlog-whatsapp.md</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var COLUMNS = [
+    { id: 'Backlog', name: 'Backlog', dot: 'var(--dim)' },
+    { id: 'A fazer', name: 'A fazer', dot: 'var(--accent)' },
+    { id: 'Em andamento', name: 'Em andamento', dot: 'var(--warn)' },
+    { id: 'Concluído', name: 'Concluído', dot: 'var(--ok)' }
+  ];
+
+  var TAGS = {
+    cliente: 'Cliente', midia: 'Mídia', cronograma: 'Cronograma', menu: 'Menu',
+    ui: 'UI/Cores', nome: 'Nome', tecnico: 'Técnico', escopo: 'Escopo', vistoria: 'Vistoria'
+  };
+
+  var CARDS = [
+    { id: 'BL-01', tag: 'cliente', title: 'Aba própria de Cliente no projeto', desc: 'Tirar "Cliente" da aba Equipes e criar aba própria dentro do projeto, pra guardar briefing e preferências do cliente com fácil acesso.', origin: '18/07 · texto 11:32' },
+    { id: 'BL-02', tag: 'midia', title: 'Aba de Mídia (antes / relatórios / depois)', desc: '3 divisões dentro do projeto: fotos/vídeos de antes, relatórios fotográficos, fotos/vídeos do concluído. Debate: manter também um overview geral de todas as fotos.', origin: '18/07 · texto + áudios 11:50–11:59' },
+    { id: 'BL-03', tag: 'cronograma', title: 'Cronograma geral (todas as obras)', desc: 'Além do cronograma por projeto, ter uma visão geral comparando todas as obras ao mesmo tempo.', origin: '18/07 · texto 11:32' },
+    { id: 'BL-04', tag: 'cronograma', title: 'Cronograma geral colorido por etapa', desc: 'No cronograma geral, cada linha do tempo colorida pela etapa do projeto — ajuda a alinhar tarefas entre obras.', origin: '18/07 · texto 11:32' },
+    { id: 'BL-05', tag: 'menu', title: 'Botão "Novo" no lugar de "Nova vistoria"', desc: 'Botão genérico "Novo" que abre opções: novo projeto, novo relatório fotográfico, ou nova vistoria.', origin: '18/07 · texto + áudio 12:52' },
+    { id: 'BL-06', tag: 'ui', title: 'Paleta de cores customizável por escritório', desc: 'Logo + botões seguindo paleta do usuário (4 tons). Decisão: adiar, mas é risco real de adoção.', origin: '18/07 · áudios 16:05–16:15 · em suspensão' },
+    { id: 'BL-07', tag: 'nome', title: 'Nome do app: "Gestio"', desc: '"Gestio: Gestão de Obras e Projetos" — do latim clássico. Ainda em brainstorm, não fechado.', origin: '18/07 · texto 13:23–13:30' },
+    { id: 'BL-08', tag: 'tecnico', title: 'Levantamento técnico (planta) no app', desc: 'Desenhar a planta na primeira vistoria: spline de parede, cotas, blocos de porta/janela (básico, viável). Pago: mobiliário, 3D, export SKP/OBJ.', origin: '18/07 · texto + áudios 11:59–12:44' },
+    { id: 'BL-09', tag: 'escopo', title: 'Abranger além de arquitetura', desc: 'Incluir engenharia e outros profissionais de obra, não nichar só em interiores/arquitetura.', origin: '18/07 · áudios 11:27–11:33' },
+    { id: 'BL-10', tag: 'vistoria', title: 'Documento automático da vistoria', desc: 'Gerar relatório automático a partir da vistoria: fotos + marcações + texto escrito, sem montagem manual.', origin: '18/07 · áudio 11:37' },
+    { id: 'BL-11', tag: 'vistoria', title: 'Decidir: relatório fotográfico dentro de Vistoria?', desc: 'Questão em aberto: relatório fotográfico deveria morar dentro do menu de Vistoria? Precisa decisão antes de fechar BL-01/02.', origin: '18/07 · áudio 11:36 · decisão pendente' }
+  ];
+
+  var statuses = {};
+  var dragId = null;
+  var toastTimer = null;
+
+  function toast(msg, isErr) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (isErr ? ' err' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.className = 'toast'; }, 2600);
+  }
+
+  function iconClock() {
+    return '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+  }
+
+  function render() {
+    var board = document.getElementById('board');
+    board.innerHTML = '';
+
+    var counts = {};
+    COLUMNS.forEach(function (c) { counts[c.id] = 0; });
+    CARDS.forEach(function (c) {
+      var s = statuses[c.id] || 'Backlog';
+      counts[s] = (counts[s] || 0) + 1;
+    });
+
+    document.getElementById('stats').innerHTML = COLUMNS.map(function (c) {
+      return '<div class="stat"><div class="n">' + counts[c.id] + '</div><div class="l">' + c.name + '</div></div>';
+    }).join('');
+
+    COLUMNS.forEach(function (col) {
+      var colEl = document.createElement('div');
+      colEl.className = 'col';
+
+      colEl.addEventListener('dragover', function (e) { e.preventDefault(); colEl.classList.add('over'); });
+      colEl.addEventListener('dragleave', function () { colEl.classList.remove('over'); });
+      colEl.addEventListener('drop', function () {
+        colEl.classList.remove('over');
+        if (dragId) moveCard(dragId, col.id);
+        dragId = null;
+      });
+
+      var head = document.createElement('div');
+      head.className = 'col-head';
+      head.innerHTML = '<div class="name"><span class="dot" style="background:' + col.dot + '"></span>' + col.name + '</div><span class="count">' + counts[col.id] + '</span>';
+      colEl.appendChild(head);
+
+      var cardsWrap = document.createElement('div');
+      cardsWrap.className = 'cards';
+
+      CARDS.filter(function (c) { return (statuses[c.id] || 'Backlog') === col.id; }).forEach(function (c) {
+        var cardEl = document.createElement('div');
+        cardEl.className = 'card';
+        cardEl.draggable = true;
+        cardEl.addEventListener('dragstart', function () { dragId = c.id; cardEl.classList.add('dragging'); });
+        cardEl.addEventListener('dragend', function () { cardEl.classList.remove('dragging'); });
+        cardEl.innerHTML =
+          '<div class="row1">' +
+            '<span class="tag" style="background:var(--tag-' + c.tag + '-soft);color:var(--tag-' + c.tag + ')">' + TAGS[c.tag] + '</span>' +
+            '<span class="id mono">' + c.id + '</span>' +
+          '</div>' +
+          '<h3>' + c.title + '</h3>' +
+          '<p class="desc">' + c.desc + '</p>' +
+          '<div class="origin">' + iconClock() + c.origin + '</div>';
+        cardsWrap.appendChild(cardEl);
+      });
+
+      colEl.appendChild(cardsWrap);
+      board.appendChild(colEl);
+    });
+  }
+
+  function moveCard(id, newStatus) {
+    var prev = statuses[id];
+    statuses[id] = newStatus;
+    render();
+    fetch('/api/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, status: newStatus })
+    })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function () { toast(id + ' → ' + newStatus + ' · salvo no backlog-whatsapp.md'); })
+      .catch(function (err) {
+        statuses[id] = prev;
+        render();
+        toast('Falhou salvar ' + id + ': ' + err.message, true);
+      });
+  }
+
+  fetch('/api/status')
+    .then(function (r) { return r.json(); })
+    .then(function (data) { statuses = data; render(); })
+    .catch(function (err) { toast('Não consegui carregar status: ' + err.message, true); render(); });
+})();
+</script>
+</body>
+</html>
