@@ -15,14 +15,22 @@ import {
   Mail,
   Phone,
   Ban,
+  Image as ImageIcon,
 } from 'lucide-react'
 import { Card, Avatar, AvatarStack, Progress, Badge, Ring } from '@/components/ui'
-import { projects, timeline, issues, inspections } from '@/data/mock'
+import { projects, timeline, issues, inspections, photos } from '@/data/mock'
+import type { MediaPhase } from '@/data/types'
 import { coverGradient, photoGradient, formatDateLong, formatDate, priorityMeta, issueStatusMeta } from '@/lib/ui'
 import clsx from 'clsx'
 
-const tabs = ['Visão geral', 'Timeline', 'Cliente', 'Equipe', 'Projeto × Executado'] as const
+const tabs = ['Visão geral', 'Timeline', 'Mídia', 'Cliente', 'Equipe', 'Projeto × Executado'] as const
 type Tab = (typeof tabs)[number]
+
+const mediaSections: { phase: MediaPhase; title: string; description: string }[] = [
+  { phase: 'antes', title: 'Antes do projeto', description: 'Registro do espaço original, feito no levantamento inicial' },
+  { phase: 'durante', title: 'Relatórios fotográficos', description: 'Fotos das vistorias durante a execução' },
+  { phase: 'depois', title: 'Projeto concluído', description: 'Registro final da obra entregue' },
+]
 
 export default function ProjectDetail() {
   const { id } = useParams()
@@ -36,6 +44,7 @@ export default function ProjectDetail() {
   const projectInspections = inspections.filter((i) => i.projectId === project.id)
   const crew = project.team.filter((m) => m.role !== 'Cliente')
   const client = project.clientProfile
+  const projectPhotos = photos.filter((p) => p.projectId === project.id)
 
   return (
     <div className="space-y-5">
@@ -201,6 +210,58 @@ export default function ProjectDetail() {
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {tab === 'Mídia' && (
+        <div className="space-y-5">
+          {mediaSections.map((section) => {
+            const shots = projectPhotos.filter((p) => p.phase === section.phase)
+            return (
+              <Card key={section.phase} className="p-5">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h2 className="font-bold tracking-tight">{section.title}</h2>
+                    <p className="text-sm text-dim">{section.description}</p>
+                  </div>
+                  <Badge color="#1f45eb" bg="rgba(53,99,246,0.12)">{shots.length} registro(s)</Badge>
+                </div>
+
+                {shots.length === 0 ? (
+                  <div className="rounded-xl border border-dashed p-6 text-center">
+                    <ImageIcon size={20} className="mx-auto mb-2 text-dim" />
+                    <p className="text-sm text-dim">Nenhum registro nesta fase ainda.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                    {shots.map((p) => (
+                      <div key={p.id} className="overflow-hidden rounded-xl border">
+                        <div className="relative aspect-square" style={{ background: photoGradient(p.hue) }}>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+                          <div className="absolute bottom-2 left-2.5 right-2 text-white">
+                            <p className="text-sm font-bold leading-tight">{p.location}</p>
+                            <p className="text-[11px] opacity-80">{p.stage}</p>
+                          </div>
+                        </div>
+                        <div className="p-2.5">
+                          <p className="line-clamp-2 text-xs text-dim">{p.comment}</p>
+                          <p className="mt-1.5 text-[11px] text-dim">{formatDate(p.date)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            )
+          })}
+
+          <Card className="flex flex-wrap items-center gap-3 p-4">
+            <div className="flex-1">
+              <p className="font-bold">Registro fotográfico geral</p>
+              <p className="text-sm text-dim">Veja as fotos de todas as obras em um só lugar.</p>
+            </div>
+            <Link to="/registro" className="btn-outline text-sm">Abrir registro</Link>
+          </Card>
         </div>
       )}
 

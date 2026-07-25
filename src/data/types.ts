@@ -127,6 +127,8 @@ export interface TimelinePost {
   location: string
 }
 
+export type MediaPhase = 'antes' | 'durante' | 'depois'
+
 export interface PhotoRecord {
   id: string
   projectId: string
@@ -137,4 +139,5 @@ export interface PhotoRecord {
   hue: number
   hasMarkup: boolean
   stage: string
+  phase: MediaPhase
 }
