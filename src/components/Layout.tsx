@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -52,6 +52,67 @@ function Logo() {
   )
 }
 
+const newOptions = [
+  { label: 'Novo projeto', description: 'Cadastrar uma obra', icon: FolderKanban },
+  { label: 'Novo relatório fotográfico', description: 'Registro de fotos da obra', icon: Images },
+  { label: 'Nova vistoria', description: 'Checklist em campo', icon: ClipboardCheck },
+]
+
+function NewButton({ onSelect }: { onSelect?: () => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false)
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
+
+  return (
+    <div ref={ref} className="relative">
+      <button className="btn-primary w-full" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        <Plus size={16} /> Novo
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute inset-x-0 top-full z-40 mt-1.5 overflow-hidden rounded-xl border shadow-lg"
+          style={{ background: 'var(--surface)' }}
+        >
+          {newOptions.map((option) => (
+            <button
+              key={option.label}
+              role="menuitem"
+              onClick={() => {
+                setOpen(false)
+                onSelect?.()
+              }}
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition hover:bg-blueprint-50 dark:hover:bg-blueprint-950"
+            >
+              <option.icon size={17} className="shrink-0 text-blueprint-600" />
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">{option.label}</span>
+                <span className="block truncate text-xs text-dim">{option.description}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
@@ -60,9 +121,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <div className="px-3">
-        <button className="btn-primary w-full">
-          <Plus size={16} /> Nova Vistoria
-        </button>
+        <NewButton onSelect={onNavigate} />
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
