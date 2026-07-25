@@ -10,17 +10,18 @@ import {
   Play,
   Mic,
   Camera,
-  Image as ImageIcon,
   Layers,
   GitCompareArrows,
-  ChevronRight,
+  Mail,
+  Phone,
+  Ban,
 } from 'lucide-react'
 import { Card, Avatar, AvatarStack, Progress, Badge, Ring } from '@/components/ui'
 import { projects, timeline, issues, inspections } from '@/data/mock'
 import { coverGradient, photoGradient, formatDateLong, formatDate, priorityMeta, issueStatusMeta } from '@/lib/ui'
 import clsx from 'clsx'
 
-const tabs = ['Visão geral', 'Timeline', 'Equipe', 'Projeto × Executado'] as const
+const tabs = ['Visão geral', 'Timeline', 'Cliente', 'Equipe', 'Projeto × Executado'] as const
 type Tab = (typeof tabs)[number]
 
 export default function ProjectDetail() {
@@ -33,6 +34,8 @@ export default function ProjectDetail() {
   const posts = timeline.filter((t) => t.projectId === project.id)
   const projectIssues = issues.filter((i) => i.projectId === project.id)
   const projectInspections = inspections.filter((i) => i.projectId === project.id)
+  const crew = project.team.filter((m) => m.role !== 'Cliente')
+  const client = project.clientProfile
 
   return (
     <div className="space-y-5">
@@ -147,7 +150,7 @@ export default function ProjectDetail() {
             <Card className="p-5">
               <h2 className="mb-3 font-bold tracking-tight">Equipe</h2>
               <div className="space-y-2.5">
-                {project.team.map((m) => (
+                {crew.map((m) => (
                   <div key={m.id} className="flex items-center gap-3">
                     <Avatar initials={m.initials} color={m.avatarColor} size={34} />
                     <div>
@@ -201,9 +204,90 @@ export default function ProjectDetail() {
         </div>
       )}
 
+      {tab === 'Cliente' && (
+        <div className="grid gap-4 lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-2">
+            <Card className="p-5">
+              <h2 className="mb-4 font-bold tracking-tight">Briefing</h2>
+              <dl className="space-y-3">
+                {client.briefing.map((b) => (
+                  <div key={b.label} className="rounded-xl border p-3.5" style={{ background: 'var(--surface-2)' }}>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-dim">{b.label}</dt>
+                    <dd className="mt-1 text-sm leading-relaxed">{b.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Card>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="p-5">
+                <h2 className="mb-3 flex items-center gap-2 font-bold tracking-tight">
+                  <Heart size={16} className="text-blueprint-600" /> Preferências
+                </h2>
+                <ul className="space-y-2">
+                  {client.preferences.map((p) => (
+                    <li key={p} className="flex gap-2 text-sm leading-relaxed">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-blueprint-500" />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+
+              <Card className="p-5">
+                <h2 className="mb-3 flex items-center gap-2 font-bold tracking-tight">
+                  <Ban size={16} className="text-clay-500" /> Restrições
+                </h2>
+                <ul className="space-y-2">
+                  {client.restrictions.map((r) => (
+                    <li key={r} className="flex gap-2 text-sm leading-relaxed">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Card className="p-5">
+              <h2 className="mb-3 font-bold tracking-tight">Contato</h2>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-semibold">{client.name}</p>
+                  <p className="text-xs text-dim">{client.contactName}</p>
+                </div>
+                <a href={`mailto:${client.email}`} className="flex items-center gap-2.5 text-sm hover:text-blueprint-600">
+                  <Mail size={15} className="shrink-0 text-dim" />
+                  <span className="truncate">{client.email}</span>
+                </a>
+                <a href={`tel:${client.phone.replace(/\D/g, '')}`} className="flex items-center gap-2.5 text-sm hover:text-blueprint-600">
+                  <Phone size={15} className="shrink-0 text-dim" />
+                  {client.phone}
+                </a>
+                <p className="flex items-center gap-2.5 text-sm text-dim">
+                  <Calendar size={15} className="shrink-0" />
+                  Cliente desde {formatDate(client.since)}
+                </p>
+              </div>
+              <div className="mt-4 flex gap-2">
+                <button className="btn-outline flex-1 text-sm">Mensagem</button>
+                <Link to="/cliente" className="btn-ghost text-sm">Portal</Link>
+              </div>
+            </Card>
+
+            <Card className="p-5">
+              <h2 className="mb-2 font-bold tracking-tight">Observações</h2>
+              <p className="text-sm leading-relaxed text-dim">{client.notes}</p>
+            </Card>
+          </div>
+        </div>
+      )}
+
       {tab === 'Equipe' && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {project.team.map((m) => (
+          {crew.map((m) => (
             <Card key={m.id} className="p-5" hover>
               <div className="flex items-center gap-3">
                 <Avatar initials={m.initials} color={m.avatarColor} size={48} />

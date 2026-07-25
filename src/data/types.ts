@@ -27,10 +27,28 @@ export interface TeamMember {
   initials: string
 }
 
+export interface ClientBriefingNote {
+  label: string
+  value: string
+}
+
+export interface ClientProfile {
+  name: string
+  contactName: string
+  email: string
+  phone: string
+  since: string // ISO
+  preferences: string[]
+  restrictions: string[]
+  briefing: ClientBriefingNote[]
+  notes: string
+}
+
 export interface Project {
   id: string
   name: string
   client: string
+  clientProfile: ClientProfile
   address: string
   city: string
   area: number // m2
