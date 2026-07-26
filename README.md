@@ -1,6 +1,6 @@
 <div align="center">
 
-# ArchView · Field & Site
+# Gestio · Gestão de Obras e Projetos
 
 **Gestão de obras e vistorias técnicas para arquitetos.**
 Centraliza execução, não conformidades, registro fotográfico e comunicação com o cliente — tudo o que hoje vive espalhado no WhatsApp.
@@ -11,7 +11,7 @@ Centraliza execução, não conformidades, registro fotográfico e comunicação
 
 ## ✨ Visão geral
 
-O ArchView resolve as dores mais comuns do acompanhamento de obra por arquitetos:
+O Gestio resolve as dores mais comuns do acompanhamento de obra por arquitetos:
 falta de controle sobre a execução, informação dispersa, dificuldade de registrar
 não conformidades, ausência de histórico das visitas e clientes pedindo atualizações
 constantes.
@@ -28,14 +28,15 @@ cobrindo o fluxo completo do produto com dados de demonstração.
 | **Detalhe do Projeto** | Visão geral, **Timeline** (feed estilo Instagram), equipe e **Projeto × Executado** |
 | **Vistorias** | Criação de vistoria + histórico. O coração do sistema |
 | **Detalhe da Vistoria** | **Checklist interativo** por etapa, **marcação sobre foto**, **diário de obra automático** |
-| **Registro Fotográfico** | Grid com localização/data/responsável/comentário, lightbox e **análise IA de Obra** |
+| **Registro Fotográfico** | Grid com localização/data/responsável/comentário, lightbox e **análise da Genie** |
 | **Pendências** | Quadro **Kanban** (Trello) com 5 status e **drag-and-drop** |
 | **Cronograma** | **Gantt simplificado** com percentual de execução e marcador "hoje" |
 | **Relatórios** | Geração de PDF (semanal/mensal/final) com preview, letterhead e **assinatura digital** |
 | **Área do Cliente** | Portal simplificado: cronograma, fotos, avanço e relatórios — sem controles internos |
 
-Diferenciais de IA presentes na interface: **IA de Obra** (análise de fotos — falhas,
-acabamentos incompletos, inconsistências) e **IA de Relatórios** (notas → relatório técnico).
+A IA do produto se chama **Genie** e aparece em dois pontos da interface: análise de fotos
+(falhas, acabamentos incompletos, inconsistências) e geração de relatório técnico a partir
+das notas da vistoria.
 
 ## 🎨 Design System
 

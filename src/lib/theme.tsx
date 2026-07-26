@@ -8,14 +8,14 @@ const ThemeCtx = createContext<{ theme: Theme; toggle: () => void }>({
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('archview-theme') as Theme | null
+    const saved = localStorage.getItem('gestio-theme') as Theme | null
     return saved ?? 'light'
   })
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
     document.documentElement.classList.toggle('light', theme === 'light')
-    localStorage.setItem('archview-theme', theme)
+    localStorage.setItem('gestio-theme', theme)
   }, [theme])
 
   return (

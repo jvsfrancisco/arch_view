@@ -92,10 +92,10 @@ export default function PhotoRegistry() {
                   </div>
                 </div>
 
-                {/* IA de Obra */}
+                {/* Genie */}
                 <div className="mt-5 rounded-2xl border p-3" style={{ background: 'rgba(53,99,246,0.05)', borderColor: 'rgba(53,99,246,0.2)' }}>
                   <div className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-blueprint-600">
-                    <Sparkles size={13} /> Análise IA de Obra
+                    <Sparkles size={13} /> Análise da Genie
                   </div>
                   <ul className="space-y-1.5 text-sm">
                     {['Acabamento incompleto detectado no canto inferior', 'Possível desalinhamento de 4–6 cm', 'Inconsistência de tonalidade entre placas'].map((t) => (

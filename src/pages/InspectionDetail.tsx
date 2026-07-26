@@ -202,10 +202,10 @@ export default function InspectionDetail() {
 
           <div className="relative overflow-hidden rounded-2xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#6f291f,#dc5d33)' }}>
             <Sparkles size={18} className="mb-2" />
-            <p className="font-bold">IA de Relatórios</p>
+            <p className="font-bold">Genie</p>
             <p className="mt-1 text-sm text-white/80">Transformar estas notas em relatório técnico profissional.</p>
             <button className="mt-3 rounded-lg bg-white/20 px-3 py-2 text-sm font-semibold backdrop-blur hover:bg-white/30 transition">
-              Gerar relatório com IA
+              Gerar relatório com a Genie
             </button>
           </div>
         </div>

@@ -44,9 +44,9 @@ function Logo() {
       </div>
       <div className="leading-none">
         <div className="font-bold tracking-tight text-[15px]">
-          Arch<span style={{ color: '#3563f6' }}>View</span>
+          Gest<span style={{ color: '#3563f6' }}>io</span>
         </div>
-        <div className="text-[10px] font-medium uppercase tracking-widest text-dim">Field & Site</div>
+        <div className="text-[10px] font-medium uppercase tracking-widest text-dim">Obras & Projetos</div>
       </div>
     </div>
   )
@@ -144,7 +144,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="relative overflow-hidden rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(135deg,#1f45eb,#1c2d8a)' }}>
           <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-white/10" />
           <Sparkles size={18} className="mb-2 text-clay-200" />
-          <p className="text-sm font-bold leading-tight">IA de Obra</p>
+          <p className="text-sm font-bold leading-tight">Genie</p>
           <p className="mt-1 text-xs text-white/70">Análise automática de fotos e relatórios técnicos.</p>
           <button className="mt-3 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur hover:bg-white/25 transition">
             Experimentar
