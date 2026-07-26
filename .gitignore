@@ -12,3 +12,5 @@ vite.config.js
 vite.config.d.ts
 
 .claude
+# Added by code-review-graph
+.code-review-graph/
