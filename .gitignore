@@ -11,6 +11,12 @@ dist-ssr
 vite.config.js
 vite.config.d.ts
 
-.claude
+# Local agent state (sessions, plans, worktrees, settings) stays out of git,
+# but the shared context docs are versioned.
+.claude/*
+!.claude/QUICK_START.md
+!.claude/ARCHITECTURE_MAP.md
+!.claude/COMMON_MISTAKES.md
+
 # Added by code-review-graph
 .code-review-graph/
