@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BACKLOG_PATH = path.resolve(__dirname, '../docs/backlog-whatsapp.md')
 const HTML_PATH = path.resolve(__dirname, 'kanban.html')
-const PORT = 5175
+const PORT = Number(process.env.PORT) || 5175
 
 const VALID_STATUS = ['Backlog', 'A fazer', 'Em andamento', 'Concluído']
 
@@ -14,12 +14,37 @@ function readBacklog() {
   return fs.readFileSync(BACKLOG_PATH, 'utf8')
 }
 
-function parseStatuses(text) {
-  const statuses = {}
-  const re = /##[^\n]*`(BL-\d+)`[\s\S]*?\n- \*\*Status:\*\* ([^\n]*)/g
+// Strips markdown emphasis and collapses the soft wraps used in the backlog.
+function clean(value) {
+  return value.replace(/\*\*/g, '').replace(/\s*\n\s*/g, ' ').trim()
+}
+
+// `$(?![\s\S])` is end-of-text: a bare `$` under /m would match every line end.
+const UNTIL_NEXT_FIELD = '(?=\\n- |\\n\\n|$(?![\\s\\S]))'
+
+function field(section, label) {
+  const m = section.match(new RegExp(`^- \\*\\*${label}:\\*\\* ([\\s\\S]*?)${UNTIL_NEXT_FIELD}`, 'm'))
+  return m ? clean(m[1]) : ''
+}
+
+// One card per `## <title> \`BL-##\`` heading, with everything the board needs.
+function parseCards(text) {
+  const cards = {}
+  const re = /^## (.+?)\s*`(BL-\d+)`\n([\s\S]*?)(?=\n## |$(?![\s\S]))/gm
   let m
-  while ((m = re.exec(text))) statuses[m[1]] = m[2].trim()
-  return statuses
+  while ((m = re.exec(text))) {
+    const [, heading, id, section] = m
+    const origin = section.match(new RegExp(`^- Origem: ([\\s\\S]*?)${UNTIL_NEXT_FIELD}`, 'm'))
+    cards[id] = {
+      id,
+      title: clean(heading).replace(/^\d+\.\s*/, ''),
+      tag: field(section, 'Tag') || 'geral',
+      desc: field(section, 'Item'),
+      origin: origin ? clean(origin[1]) : '',
+      status: field(section, 'Status') || 'Backlog',
+    }
+  }
+  return cards
 }
 
 function updateStatus(text, id, status) {
@@ -40,8 +65,8 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && req.url === '/api/status') {
-      const statuses = parseStatuses(readBacklog())
-      return send(res, 200, JSON.stringify(statuses), 'application/json')
+      const cards = parseCards(readBacklog())
+      return send(res, 200, JSON.stringify(cards), 'application/json')
     }
 
     if (req.method === 'OPTIONS' && req.url === '/api/status') {
@@ -65,7 +90,7 @@ const server = http.createServer(async (req, res) => {
       const updated = updateStatus(readBacklog(), id, status)
       fs.writeFileSync(BACKLOG_PATH, updated, 'utf8')
       console.log(`[kanban] ${id} -> ${status}`)
-      return send(res, 200, JSON.stringify(parseStatuses(updated)), 'application/json')
+      return send(res, 200, JSON.stringify(parseCards(updated)), 'application/json')
     }
 
     send(res, 404, 'Not found', 'text/plain')
