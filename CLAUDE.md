@@ -47,18 +47,20 @@ All commits are **atomic** and use **Conventional Commits, written in English**.
 - **Atomic**: one logical change per commit. Don't bundle an unrelated fix with a
   feature, or touch files outside the change's scope. If a change has two
   unrelated purposes, split it into two commits.
+- **Subject line only — no body.** One line per commit, nothing after it. If a
+  change feels like it needs a body to explain, it is too big: split it.
 - **Format**: `<type>(<optional scope>): <subject>`
   - Types: `feat`, `fix`, `docs`, `refactor`, `style`, `perf`, `test`, `chore`
   - Subject: imperative mood ("add", not "added"/"adds"), no trailing period,
-    ideally ≤ 72 chars.
-  - Body (optional, only when the *why* isn't obvious from the diff): wrap at
-    ~72 chars, explain motivation/context, not a restatement of the diff.
+    ideally ≤ 60 chars.
 - Examples:
   - `feat(kanban): add drag-and-drop between issue columns`
   - `fix(reports): correct PDF page break on long checklists`
   - `docs(backlog): mark BL-05 as in progress`
 - Never combine `feat` + `fix` + `chore` in one commit. Never use vague subjects
   like "update stuff" or "fixes".
+
+Commits made before this rule have bodies; leave them as they are.
 
 ## Working notes
 
