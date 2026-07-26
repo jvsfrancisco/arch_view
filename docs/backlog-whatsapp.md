@@ -134,7 +134,7 @@
   que trabalha com o pai de um dos participantes poderia usar o app depois de pronto.
 - **Status (contexto):** Alinhado entre os dois, sem trabalho técnico associado ainda (é
   direcionamento de produto, não uma tela/feature específica).
-- **Status:** A fazer
+- **Status:** Concluído
 - Origem: áudios 11:27:41 e 11:33:31.
 
 ## 10. Vistoria — gerar documento/relatório automático `BL-10`
